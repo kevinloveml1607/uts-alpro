@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="id">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f5f5ef">
+	<title>Ruang Algoritma — Catatan & Studi Kasus</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+	<style>
+		:root {
+			--paper: #f5f5ef;
+			--ink: #202820;
+			--muted: #737c71;
+			--line: #e2e5dc;
+			--green: #315c42;
+			--lime: #d8ee86;
+			--orange: #ef7850;
+			--white: #fff;
+			--display: 'Space Grotesk', sans-serif;
+			--body: 'DM Sans', sans-serif;
+			--mono: 'DM Mono', monospace;
+		}
+		* { box-sizing: border-box; }
+		body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); }
+		button, input, select, textarea { font: inherit; }
+		.app-shell { min-height: 100vh; }
+		.sidebar { width: 250px; position: fixed; inset: 0 auto 0 0; z-index: 5; padding: 29px 20px; background: #202820; color: #f4f5ec; display: flex; flex-direction: column; }
+		.brand { display: flex; gap: 11px; align-items: center; padding: 0 8px; color: inherit; text-decoration: none; }
+		.brand-mark { width: 35px; height: 35px; display: grid; place-items: center; color: var(--ink); background: var(--lime); border-radius: 10px 10px 10px 3px; font-size: 18px; }
+		.brand-name { font: 700 16px var(--display); letter-spacing: 0; }
+		.brand-sub { display: block; margin-top: 1px; color: #a5ad9f; font-size: 10px; letter-spacing: 0; }
+		.side-label { margin: 43px 10px 10px; color: #8d978a; font: 500 10px var(--mono); text-transform: uppercase; }
+		.side-link { min-height: 42px; display: flex; align-items: center; gap: 11px; padding: 0 11px; margin: 2px 0; border-radius: 7px; color: #c5ccc1; text-decoration: none; font-size: 13px; transition: background .18s, color .18s; }
+		.side-link:hover, .side-link.active { color: #fff; background: #343f34; }
+		.side-link.active .bi { color: var(--lime); }
+		.side-link .bi { width: 17px; font-size: 15px; }
+		.nav-count { margin-left: auto; color: #aeb9a9; font: 11px var(--mono); }
+		.side-bottom { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid #394238; color: #a4ada1; font-size: 11px; line-height: 1.6; }
+		.side-bottom .bi { color: var(--lime); margin-right: 5px; }
+		.main-area { min-height: 100vh; margin-left: 250px; }
+		.topbar { min-height: 69px; display: flex; align-items: center; justify-content: space-between; padding: 0 5.1%; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.48); }
+		.breadcrumb-text { color: var(--muted); font-size: 12px; }
+		.breadcrumb-text strong { color: var(--ink); font-weight: 600; }
+		.top-actions { display: flex; gap: 9px; align-items: center; }
+		.date-stamp { margin-right: 10px; color: var(--muted); font: 11px var(--mono); }
+		.btn-new { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 0; border-radius: 5px; color: white; background: var(--green); font-size: 12px; font-weight: 600; transition: background .18s, transform .18s; }
+		.btn-new:hover { color: white; background: #254a34; transform: translateY(-1px); }
+		.content { max-width: 1370px; padding: 47px 5.1% 68px; margin: auto; }
+		.eyebrow { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; color: var(--green); font: 500 10px var(--mono); text-transform: uppercase; }
+		.eyebrow::before { content: ''; width: 19px; height: 1px; background: var(--green); }
+		h1 { margin: 0; font: 600 clamp(32px, 3.3vw, 46px)/1.08 var(--display); letter-spacing: 0; }
+		.intro { max-width: 515px; margin: 11px 0 27px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+		.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 660px; margin-bottom: 37px; border: 1px solid var(--line); background: rgba(255,255,255,.5); }
+		.stat { padding: 15px 20px; border-right: 1px solid var(--line); }
+		.stat:last-child { border-right: 0; }
+		.stat-label { color: var(--muted); font: 10px var(--mono); text-transform: uppercase; }
+		.stat-value { display: block; margin-top: 5px; font: 600 24px var(--display); }
+		.stat-value small { color: var(--muted); font: 11px var(--body); }
+		.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 17px; }
+		.section-heading h2 { margin: 0; font: 600 19px var(--display); }
+		.section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+		.tools { display: flex; gap: 9px; align-items: center; margin-bottom: 15px; }
+		.search-box { position: relative; flex: 1; max-width: 400px; }
+		.search-box .bi { position: absolute; top: 50%; left: 12px; color: #879087; transform: translateY(-50%); }
+		.search-input, .filter-select { height: 38px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink); background: rgba(255,255,255,.72); font-size: 11px; }
+		.search-input { width: 100%; padding: 0 12px 0 35px; outline: none; }
+		.search-input:focus, .filter-select:focus { border-color: #7f9a67; box-shadow: 0 0 0 3px rgba(96,133,73,.1); }
+		.filter-select { min-width: 136px; padding: 0 28px 0 10px; }
+		.result-count { margin-left: auto; color: var(--muted); font: 10px var(--mono); white-space: nowrap; }
+		.case-list { border-top: 1px solid #cfd5ca; }
+		.case-card { position: relative; display: grid; grid-template-columns: 58px minmax(0, 1fr) 148px; gap: 18px; align-items: start; padding: 21px 12px 21px 8px; border-bottom: 1px solid var(--line); transition: background .18s; }
+		.case-card:hover { background: rgba(255,255,255,.47); }
+		.case-index { padding-top: 2px; color: #a2aa9f; font: 11px var(--mono); }
+		.case-main { min-width: 0; }
+		.case-meta { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-bottom: 7px; }
+		.category { color: var(--green); font: 500 10px var(--mono); text-transform: uppercase; }
+		.meta-dot { width: 3px; height: 3px; background: #a5aca0; border-radius: 50%; }
+		.meta-date { color: #899187; font-size: 10px; }
+		.case-title { margin: 0 0 6px; font: 600 17px/1.35 var(--display); letter-spacing: 0; }
+		.case-description { max-width: 670px; margin: 0; color: #687267; font-size: 11px; line-height: 1.65; }
+		.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+		.tag { padding: 4px 7px; border: 1px solid #e1e5da; border-radius: 3px; color: #697367; background: #f9faf6; font: 9px var(--mono); }
+		.case-side { display: flex; flex-direction: column; align-items: flex-end; gap: 11px; padding-top: 4px; }
+		.complexity { color: #657064; font: 10px var(--mono); white-space: nowrap; }
+		.complexity strong { color: var(--ink); font-weight: 500; }
+		.difficulty { padding: 4px 7px; border-radius: 3px; font: 9px var(--mono); }
+		.difficulty.mudah { color: #3d684a; background: #e8f2df; }
+		.difficulty.menengah { color: #886629; background: #f5efd9; }
+		.difficulty.sulit { color: #a54f3d; background: #f8e6df; }
+		.case-actions { display: flex; gap: 5px; }
+		.icon-btn { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid transparent; border-radius: 4px; color: #778174; background: transparent; font-size: 13px; }
+		.icon-btn:hover { border-color: var(--line); color: var(--ink); background: white; }
+		.icon-btn.favorite.active { color: var(--orange); }
+		.empty-state { padding: 54px 18px; text-align: center; border-bottom: 1px solid var(--line); }
+		.empty-icon { display: grid; width: 45px; height: 45px; margin: 0 auto 13px; place-items: center; border-radius: 50%; color: var(--green); background: #e7eddd; font-size: 20px; }
+		.empty-state h3 { margin: 0 0 5px; font: 600 17px var(--display); }
+		.empty-state p { margin: 0; color: var(--muted); font-size: 12px; }
+		.modal-content { border: 1px solid var(--line); border-radius: 7px; box-shadow: 0 20px 70px rgba(20,35,22,.18); }
+		.modal-header { padding: 20px 24px 16px; border-bottom-color: var(--line); }
+		.modal-title { font: 600 20px var(--display); }
+		.modal-body { padding: 22px 24px; }
+		.modal-footer { padding: 14px 24px; border-top-color: var(--line); }
+		.form-label { margin-bottom: 6px; color: #495348; font-size: 11px; font-weight: 600; }
+		.form-control, .form-select { min-height: 39px; border-color: #dce1d8; border-radius: 4px; font-size: 12px; }
+		.form-control:focus, .form-select:focus { border-color: #7f9a67; box-shadow: 0 0 0 3px rgba(96,133,73,.1); }
+		textarea.form-control { min-height: 84px; resize: vertical; }
+		textarea.code-input { min-height: 158px; color: #e7efda; background: #202820; font: 11px/1.6 var(--mono); tab-size: 2; }
+		.detail-content { color: #535d52; font-size: 13px; line-height: 1.75; white-space: pre-wrap; }
+		.detail-code { overflow: auto; padding: 17px; border-radius: 4px; color: #e7efda; background: #202820; font: 11px/1.6 var(--mono); white-space: pre; }
+		.detail-label { margin: 20px 0 8px; color: var(--green); font: 500 10px var(--mono); text-transform: uppercase; }
+		.toast-container { z-index: 1090; }
+		.app-toast { border: 1px solid var(--line); border-left: 3px solid var(--green); border-radius: 4px; background: white; font-size: 12px; }
+		@media (max-width: 900px) {
+			.sidebar { width: 210px; padding-inline: 14px; }
+			.main-area { margin-left: 210px; }
+			.content { padding-inline: 4%; }
+			.case-card { grid-template-columns: 37px minmax(0, 1fr) 115px; gap: 12px; }
+		}
+		@media (max-width: 680px) {
+			.sidebar { position: sticky; inset: 0 0 auto; width: 100%; height: 56px; flex-direction: row; align-items: center; padding: 0 15px; }
+			.brand-mark { width: 31px; height: 31px; }
+			.brand-sub, .side-label, .side-bottom, .side-link:not(.active) { display: none; }
+			.sidebar nav:first-of-type { display: flex; gap: 4px; margin-left: auto; }
+			.sidebar nav:nth-of-type(2) { display: none; }
+			.sidebar nav:first-of-type .side-link { display: grid; width: 39px; height: 39px; min-height: 39px; place-items: center; padding: 0; margin: 0; }
+			.sidebar nav:first-of-type .side-link span { display: none; }
+			.sidebar nav:first-of-type .side-link.active { background: #343f34; }
+			.main-area { margin-left: 0; }
+			.topbar { min-height: 55px; padding: 0 18px; }
+			.date-stamp { display: none; }
+			.content { padding: 33px 18px 48px; }
+			.intro { margin-bottom: 22px; }
+			.stats { margin-bottom: 30px; }
+			.stat { padding: 12px 10px; }
+			.stat-value { font-size: 21px; }
+			.section-heading { align-items: start; }
+			.tools { flex-wrap: wrap; }
+			.search-box { flex-basis: 100%; max-width: none; }
+			.filter-select { flex: 1; min-width: 0; }
+			.result-count { margin-left: 0; }
+			.case-card { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 17px 4px; }
+			.case-side { grid-column: 2; flex-direction: row; align-items: center; justify-content: space-between; padding-top: 0; }
+			.case-title { font-size: 16px; }
+			.case-description { font-size: 11px; }
+			.modal-dialog { margin: 10px; }
+			.modal-body { padding: 18px; }
+		}
+		@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+	</style>
+</head>
+<body>
+	<div class="app-shell">
+		<aside class="sidebar" aria-label="Navigasi utama">
+			<a class="brand" href="#beranda" aria-label="Ruang Algoritma, beranda">
+				<span class="brand-mark"><i class="bi bi-braces-asterisk"></i></span>
+				<span class="brand-name">ruang algoritma<span class="brand-sub">CATATAN BELAJAR PEMROGRAMAN</span></span>
+			</a>
+			<div class="side-label">Perpustakaan</div>
+			<nav>
+				<a class="side-link active" href="#semua" data-view="all"><i class="bi bi-grid-1x2"></i><span>Semua studi kasus</span><span class="nav-count" id="allCount">0</span></a>
+				<a class="side-link" href="#favorit" data-view="favorites"><i class="bi bi-bookmark"></i><span>Favorit</span><span class="nav-count" id="favoriteCount">0</span></a>
+			</nav>
+			<div class="side-label">Topik</div>
+			<nav>
+				<a class="side-link" href="#sorting" data-category="Sorting"><i class="bi bi-arrow-down-up"></i><span>Sorting</span></a>
+				<a class="side-link" href="#pencarian" data-category="Pencarian"><i class="bi bi-search"></i><span>Pencarian</span></a>
+				<a class="side-link" href="#struktur-data" data-category="Struktur Data"><i class="bi bi-diagram-3"></i><span>Struktur Data</span></a>
+				<a class="side-link" href="#dynamic-programming" data-category="Dynamic Programming"><i class="bi bi-bezier2"></i><span>Dynamic Programming</span></a>
+			</nav>
+			<div class="side-bottom"><i class="bi bi-cloud-check"></i><span id="storageStatus">Tersimpan di browser ini</span></div>
+		</aside>
+
+		<main class="main-area" id="beranda">
+			<header class="topbar">
+				<div class="breadcrumb-text">Perpustakaan <span class="mx-2">/</span> <strong id="viewTitle">Semua studi kasus</strong></div>
+				<div class="top-actions"><span class="date-stamp" id="todayDate"></span><button class="btn-new" type="button" data-bs-toggle="modal" data-bs-target="#caseModal" id="newCaseButton"><i class="bi bi-plus-lg"></i><span>Catatan baru</span></button></div>
+			</header>
+			<div class="content">
+				<div class="eyebrow">Ruang belajar pribadi</div>
+				<h1>Ide bagus layak<br>untuk diingat.</h1>
+				<p class="intro">Kumpulan studi kasus algoritma, solusi, dan catatan kecil yang membuat proses belajar pemrograman terus bergerak.</p>
+
+				<section class="stats" aria-label="Ringkasan koleksi">
+					<div class="stat"><span class="stat-label">Total catatan</span><span class="stat-value" id="totalStat">0</span></div>
+					<div class="stat"><span class="stat-label">Topik dipelajari</span><span class="stat-value" id="topicStat">0</span></div>
+					<div class="stat"><span class="stat-label">Disimpan</span><span class="stat-value" id="savedStat">0 <small>favorit</small></span></div>
+				</section>
+
+				<section aria-labelledby="listHeading">
+					<div class="section-heading"><div><h2 id="listHeading">Catatan terbaru</h2><p>Semua ide dan solusi, tersusun di satu tempat.</p></div></div>
+					<div class="tools">
+						<label class="search-box"><i class="bi bi-search"></i><input id="searchInput" class="search-input" type="search" placeholder="Cari judul, topik, atau tag..." aria-label="Cari catatan"></label>
+						<select id="categoryFilter" class="filter-select" aria-label="Filter topik"><option value="">Semua topik</option></select>
+						<select id="sortFilter" class="filter-select" aria-label="Urutkan catatan"><option value="newest">Terbaru</option><option value="oldest">Terlama</option><option value="title">Judul A-Z</option></select>
+						<span class="result-count" id="resultCount">0 CATATAN</span>
+					</div>
+					<div class="case-list" id="caseList" aria-live="polite"></div>
+				</section>
+			</div>
+		</main>
+	</div>
+
+	<div class="modal fade" id="caseModal" tabindex="-1" aria-labelledby="caseModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><form class="modal-content" id="caseForm">
+			<div class="modal-header"><div><div class="eyebrow mb-2">Arsip pengetahuan</div><h2 class="modal-title" id="caseModalTitle">Catatan baru</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button></div>
+			<div class="modal-body">
+				<input type="hidden" id="caseId">
+				<div class="mb-3"><label for="caseTitle" class="form-label">Judul studi kasus *</label><input class="form-control" id="caseTitle" maxlength="100" required placeholder="Contoh: Mencari pasangan angka dengan Two Sum"></div>
+				<div class="row g-3 mb-3">
+					<div class="col-md-5"><label for="caseCategory" class="form-label">Topik *</label><select class="form-select" id="caseCategory" required><option value="">Pilih topik</option><option>Sorting</option><option>Pencarian</option><option>Struktur Data</option><option>Dynamic Programming</option><option>Graf</option><option>Greedy</option><option>Rekursi</option><option>Lainnya</option></select></div>
+					<div class="col-md-4"><label for="caseDifficulty" class="form-label">Tingkat kesulitan</label><select class="form-select" id="caseDifficulty"><option>Mudah</option><option selected>Menengah</option><option>Sulit</option></select></div>
+					<div class="col-md-3"><label for="caseLanguage" class="form-label">Bahasa</label><select class="form-select" id="caseLanguage"><option>JavaScript</option><option>Python</option><option>Java</option><option>C++</option><option>Lainnya</option></select></div>
+				</div>
+				<div class="row g-3 mb-3"><div class="col-md-6"><label for="caseTime" class="form-label">Kompleksitas waktu</label><input class="form-control" id="caseTime" placeholder="O(n log n)"></div><div class="col-md-6"><label for="caseSpace" class="form-label">Kompleksitas ruang</label><input class="form-control" id="caseSpace" placeholder="O(1)"></div></div>
+				<div class="mb-3"><label for="caseDescription" class="form-label">Masalah & pendekatan *</label><textarea class="form-control" id="caseDescription" required placeholder="Apa masalahnya? Bagaimana pendekatan untuk menyelesaikannya?"></textarea></div>
+				<div class="mb-3"><label for="caseCode" class="form-label">Potongan kode</label><textarea class="form-control code-input" id="caseCode" spellcheck="false" placeholder="function solve(input) {\n  // tulis solusi di sini\n}"></textarea></div>
+				<div><label for="caseTags" class="form-label">Tag <span class="fw-normal text-secondary">(pisahkan dengan koma)</span></label><input class="form-control" id="caseTags" placeholder="array, hash map, leetcode"></div>
+			</div>
+			<div class="modal-footer"><button type="button" class="btn btn-sm btn-light border" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn-new"><i class="bi bi-check2"></i><span>Simpan catatan</span></button></div>
+		</form></div>
+	</div>
+
+	<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><div class="modal-content">
+			<div class="modal-header"><div><div class="eyebrow mb-2" id="detailCategory">Studi kasus</div><h2 class="modal-title" id="detailTitle"></h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button></div>
+			<div class="modal-body"><div class="d-flex flex-wrap gap-2 mb-3" id="detailMeta"></div><div class="detail-content" id="detailDescription"></div><div id="detailCodeWrap"><div class="detail-label">Implementasi</div><pre class="detail-code mb-0"><code id="detailCode"></code></pre></div><div class="tag-row mt-3" id="detailTags"></div></div>
+		</div></div>
+	</div>
+	<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="appToast" class="toast app-toast" role="status" aria-live="polite" aria-atomic="true"><div class="toast-body d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success"></i><span id="toastMessage">Catatan tersimpan.</span></div></div></div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		(() => {
+			const STORAGE_KEY = 'ruang-algoritma-cases-v1';
+			const starterCases = [
+				{ id: 'seed-1', title: 'Mengurutkan nilai dengan Merge Sort', category: 'Sorting', difficulty: 'Menengah', language: 'JavaScript', time: 'O(n log n)', space: 'O(n)', description: 'Diberikan sebuah array angka yang belum terurut. Susun nilainya dari kecil ke besar tanpa mengubah array asli.\n\nMerge sort membagi array menjadi dua bagian sampai setiap bagian hanya berisi satu nilai, lalu menggabungkannya kembali dalam urutan yang benar. Pendekatan divide and conquer ini menjaga kompleksitas waktu tetap konsisten.', code: 'function mergeSort(array) {\n  if (array.length <= 1) return array;\n\n  const middle = Math.floor(array.length / 2);\n  const left = mergeSort(array.slice(0, middle));\n  const right = mergeSort(array.slice(middle));\n\n  return merge(left, right);\n}', tags: ['divide and conquer', 'array', 'rekursi'], favorite: true, createdAt: '2026-09-28T09:00:00.000Z' },
+				{ id: 'seed-2', title: 'Mencari elemen dengan Binary Search', category: 'Pencarian', difficulty: 'Mudah', language: 'JavaScript', time: 'O(log n)', space: 'O(1)', description: 'Cari posisi sebuah angka pada array yang sudah terurut. Setiap langkah membandingkan target dengan elemen tengah, lalu membuang setengah ruang pencarian yang tidak mungkin berisi target.', code: 'function binarySearch(array, target) {\n  let left = 0;\n  let right = array.length - 1;\n\n  while (left <= right) {\n    const middle = Math.floor((left + right) / 2);\n    if (array[middle] === target) return middle;\n    if (array[middle] < target) left = middle + 1;\n    else right = middle - 1;\n  }\n\n  return -1;\n}', tags: ['binary search', 'array', 'iterasi'], favorite: false, createdAt: '2026-09-24T09:00:00.000Z' },
+				{ id: 'seed-3', title: 'Pasangan angka yang berjumlah target', category: 'Struktur Data', difficulty: 'Menengah', language: 'JavaScript', time: 'O(n)', space: 'O(n)', description: 'Diberikan array angka dan sebuah target, temukan dua indeks dengan nilai yang jika dijumlahkan sama dengan target. Hash map menyimpan nilai yang sudah dilihat, sehingga pasangan dapat ditemukan dalam satu kali iterasi.', code: 'function twoSum(numbers, target) {\n  const seen = new Map();\n\n  for (let index = 0; index < numbers.length; index++) {\n    const complement = target - numbers[index];\n    if (seen.has(complement)) return [seen.get(complement), index];\n    seen.set(numbers[index], index);\n  }\n\n  return [];\n}', tags: ['hash map', 'array', 'two pointers'], favorite: true, createdAt: '2026-09-20T09:00:00.000Z' },
+				{ id: 'seed-4', title: 'Tangga dengan satu atau dua langkah', category: 'Dynamic Programming', difficulty: 'Mudah', language: 'JavaScript', time: 'O(n)', space: 'O(1)', description: 'Hitung banyak cara untuk mencapai anak tangga ke-n jika setiap langkah bisa menaiki satu atau dua anak tangga. Jumlah cara pada langkah ke-n merupakan penjumlahan dua keadaan sebelumnya.', code: 'function climbStairs(steps) {\n  let previous = 1;\n  let current = 1;\n\n  for (let step = 2; step <= steps; step++) {\n    [previous, current] = [current, previous + current];\n  }\n\n  return current;\n}', tags: ['dynamic programming', 'fibonacci'], favorite: false, createdAt: '2026-09-16T09:00:00.000Z' }
+			];
+
+			const readCases = () => {
+				try {
+					const saved = localStorage.getItem(STORAGE_KEY);
+					if (saved === null) {
+						localStorage.setItem(STORAGE_KEY, JSON.stringify(starterCases));
+						return starterCases;
+					}
+					const parsed = JSON.parse(saved);
+					return Array.isArray(parsed) ? parsed : starterCases;
+				} catch (error) {
+					document.getElementById('storageStatus').textContent = 'Penyimpanan browser tidak tersedia';
+					return starterCases;
+				}
+			};
+			let cases = readCases();
+			let activeView = 'all';
+			let activeCategory = '';
+			const caseModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('caseModal'));
+			const detailModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('detailModal'));
+			const toast = bootstrap.Toast.getOrCreateInstance(document.getElementById('appToast'), { delay: 2400 });
+			const byId = (id) => document.getElementById(id);
+			const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+			const saveCases = () => {
+				try {
+					localStorage.setItem(STORAGE_KEY, JSON.stringify(cases));
+					byId('storageStatus').textContent = 'Tersimpan di browser ini';
+				} catch (error) {
+					byId('storageStatus').textContent = 'Penyimpanan browser tidak tersedia';
+					showToast('Catatan belum dapat disimpan di browser ini.');
+				}
+			};
+			const showToast = (message) => { byId('toastMessage').textContent = message; toast.show(); };
+			const formattedDate = (date) => new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(date));
+			const updateFilters = () => {
+				const filter = byId('categoryFilter');
+				const selected = filter.value;
+				const categories = [...new Set(cases.map((item) => item.category))].sort((a, b) => a.localeCompare(b, 'id'));
+				filter.innerHTML = '<option value="">Semua topik</option>' + categories.map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('');
+				filter.value = categories.includes(selected) ? selected : '';
+			};
+			const updateStats = () => {
+				const favorites = cases.filter((item) => item.favorite).length;
+				byId('totalStat').textContent = cases.length;
+				byId('topicStat').textContent = new Set(cases.map((item) => item.category)).size;
+				byId('savedStat').innerHTML = `${favorites} <small>favorit</small>`;
+				byId('allCount').textContent = cases.length;
+				byId('favoriteCount').textContent = favorites;
+			};
+			const render = () => {
+				updateFilters();
+				updateStats();
+				const query = byId('searchInput').value.trim().toLocaleLowerCase('id');
+				const selectedCategory = byId('categoryFilter').value;
+				const sort = byId('sortFilter').value;
+				let visible = cases.filter((item) => {
+					const searchable = [item.title, item.category, item.description, ...(item.tags || [])].join(' ').toLocaleLowerCase('id');
+					return (!query || searchable.includes(query)) && (!selectedCategory || item.category === selectedCategory) && (!activeCategory || item.category === activeCategory) && (activeView !== 'favorites' || item.favorite);
+				});
+				visible.sort((a, b) => sort === 'title' ? a.title.localeCompare(b.title, 'id') : sort === 'oldest' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt));
+				byId('resultCount').textContent = `${visible.length} CATATAN`;
+				byId('listHeading').textContent = activeView === 'favorites' ? 'Catatan favorit' : activeCategory || 'Catatan terbaru';
+				byId('viewTitle').textContent = activeView === 'favorites' ? 'Favorit' : activeCategory || 'Semua studi kasus';
+				if (!visible.length) {
+					const hasCases = cases.length > 0;
+					byId('caseList').innerHTML = `<div class="empty-state"><span class="empty-icon"><i class="bi bi-${hasCases ? 'search' : 'journal-plus'}"></i></span><h3>${hasCases ? 'Catatan tidak ditemukan' : 'Mulai kumpulkan ide'}</h3><p>${hasCases ? 'Coba kata kunci atau filter yang berbeda.' : 'Simpan studi kasus pertama untuk memulai perpustakaanmu.'}</p>${hasCases ? '' : '<button class="btn-new mt-3" type="button" data-bs-toggle="modal" data-bs-target="#caseModal"><i class="bi bi-plus-lg"></i> Catatan baru</button>'}</div>`;
+					return;
+				}
+				byId('caseList').innerHTML = visible.map((item, index) => `
+					<article class="case-card">
+						<div class="case-index">${String(index + 1).padStart(2, '0')}</div>
+						<div class="case-main">
+							<div class="case-meta"><span class="category">${escapeHtml(item.category)}</span><span class="meta-dot"></span><span class="meta-date">${formattedDate(item.createdAt)}</span></div>
+							<h3 class="case-title">${escapeHtml(item.title)}</h3>
+							<p class="case-description">${escapeHtml(item.description.split('\n')[0])}</p>
+							<div class="tag-row">${(item.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}</div>
+						</div>
+						<div class="case-side">
+							<span class="difficulty ${escapeHtml(item.difficulty.toLowerCase())}">${escapeHtml(item.difficulty)}</span>
+							<span class="complexity">Waktu <strong>${escapeHtml(item.time || '-')}</strong></span>
+							<div class="case-actions">
+								<button class="icon-btn" type="button" data-action="detail" data-id="${escapeHtml(item.id)}" title="Lihat catatan" aria-label="Lihat ${escapeHtml(item.title)}"><i class="bi bi-arrow-up-right"></i></button>
+								<button class="icon-btn favorite ${item.favorite ? 'active' : ''}" type="button" data-action="favorite" data-id="${escapeHtml(item.id)}" title="${item.favorite ? 'Hapus dari favorit' : 'Tambah ke favorit'}" aria-label="${item.favorite ? 'Hapus dari favorit' : 'Tambah ke favorit'}"><i class="bi bi-bookmark${item.favorite ? '-fill' : ''}"></i></button>
+								<button class="icon-btn" type="button" data-action="edit" data-id="${escapeHtml(item.id)}" title="Edit catatan" aria-label="Edit ${escapeHtml(item.title)}"><i class="bi bi-pencil"></i></button>
+								<button class="icon-btn" type="button" data-action="delete" data-id="${escapeHtml(item.id)}" title="Hapus catatan" aria-label="Hapus ${escapeHtml(item.title)}"><i class="bi bi-trash3"></i></button>
+							</div>
+						</div>
+					</article>`).join('');
+			};
+			const resetForm = () => { byId('caseForm').reset(); byId('caseId').value = ''; byId('caseModalTitle').textContent = 'Catatan baru'; };
+			const fillForm = (item) => {
+				byId('caseId').value = item.id;
+				byId('caseTitle').value = item.title;
+				byId('caseCategory').value = item.category;
+				if (![...byId('caseCategory').options].some((option) => option.value === item.category)) byId('caseCategory').value = 'Lainnya';
+				byId('caseDifficulty').value = item.difficulty;
+				byId('caseLanguage').value = item.language || 'JavaScript';
+				byId('caseTime').value = item.time || '';
+				byId('caseSpace').value = item.space || '';
+				byId('caseDescription').value = item.description;
+				byId('caseCode').value = item.code || '';
+				byId('caseTags').value = (item.tags || []).join(', ');
+				byId('caseModalTitle').textContent = 'Edit catatan';
+				caseModal.show();
+			};
+			byId('newCaseButton').addEventListener('click', resetForm);
+			byId('caseModal').addEventListener('hidden.bs.modal', resetForm);
+			byId('caseForm').addEventListener('submit', (event) => {
+				event.preventDefault();
+				if (!event.currentTarget.reportValidity()) return;
+				const id = byId('caseId').value;
+				const previous = cases.find((item) => item.id === id);
+				const category = byId('caseCategory').value === 'Lainnya' ? (byId('caseCategory').dataset.custom || 'Lainnya') : byId('caseCategory').value;
+				const entry = {
+					id: id || (crypto.randomUUID ? crypto.randomUUID() : `case-${Date.now()}`),
+					title: byId('caseTitle').value.trim(), category,
+					difficulty: byId('caseDifficulty').value, language: byId('caseLanguage').value,
+					time: byId('caseTime').value.trim(), space: byId('caseSpace').value.trim(),
+					description: byId('caseDescription').value.trim(), code: byId('caseCode').value,
+					tags: byId('caseTags').value.split(',').map((tag) => tag.trim()).filter(Boolean),
+					favorite: previous ? previous.favorite : false, createdAt: previous ? previous.createdAt : new Date().toISOString()
+				};
+				cases = previous ? cases.map((item) => item.id === id ? entry : item) : [entry, ...cases];
+				saveCases(); render(); caseModal.hide(); showToast(previous ? 'Perubahan catatan tersimpan.' : 'Catatan baru berhasil disimpan.');
+			});
+			byId('caseList').addEventListener('click', (event) => {
+				const button = event.target.closest('[data-action]');
+				if (!button) return;
+				const item = cases.find((entry) => entry.id === button.dataset.id);
+				if (!item) return;
+				if (button.dataset.action === 'favorite') {
+					item.favorite = !item.favorite; saveCases(); render(); showToast(item.favorite ? 'Ditambahkan ke favorit.' : 'Dihapus dari favorit.');
+				} else if (button.dataset.action === 'edit') fillForm(item);
+				else if (button.dataset.action === 'delete') {
+					if (!confirm(`Hapus catatan "${item.title}"?`)) return;
+					cases = cases.filter((entry) => entry.id !== item.id); saveCases(); render(); showToast('Catatan berhasil dihapus.');
+				} else if (button.dataset.action === 'detail') {
+					byId('detailCategory').textContent = item.category;
+					byId('detailTitle').textContent = item.title;
+					byId('detailDescription').textContent = item.description;
+					byId('detailCode').textContent = item.code || 'Belum ada potongan kode.';
+					byId('detailCodeWrap').hidden = !item.code;
+					byId('detailMeta').innerHTML = `<span class="difficulty ${escapeHtml(item.difficulty.toLowerCase())}">${escapeHtml(item.difficulty)}</span><span class="tag">${escapeHtml(item.language || 'JavaScript')}</span><span class="tag">Waktu: ${escapeHtml(item.time || '-')}</span><span class="tag">Ruang: ${escapeHtml(item.space || '-')}</span><span class="tag">${formattedDate(item.createdAt)}</span>`;
+					byId('detailTags').innerHTML = (item.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+					detailModal.show();
+				}
+			});
+			document.querySelectorAll('[data-view]').forEach((link) => link.addEventListener('click', (event) => {
+				event.preventDefault(); activeView = link.dataset.view; activeCategory = '';
+				document.querySelectorAll('.side-link').forEach((item) => item.classList.remove('active'));
+				link.classList.add('active'); byId('categoryFilter').value = ''; render();
+			}));
+			document.querySelectorAll('[data-category]').forEach((link) => link.addEventListener('click', (event) => {
+				event.preventDefault(); activeView = 'all'; activeCategory = link.dataset.category;
+				document.querySelectorAll('.side-link').forEach((item) => item.classList.remove('active'));
+				link.classList.add('active'); byId('categoryFilter').value = ''; render();
+			}));
+			byId('searchInput').addEventListener('input', render);
+			byId('categoryFilter').addEventListener('change', render);
+			byId('sortFilter').addEventListener('change', render);
+			byId('todayDate').textContent = new Intl.DateTimeFormat('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date());
+			render();
+		})();
+	</script>
+</body>
+</html>
